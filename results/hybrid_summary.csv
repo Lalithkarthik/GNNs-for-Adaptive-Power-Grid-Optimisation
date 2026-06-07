@@ -1,0 +1,4 @@
+model,feasibility_rate,mean_cold_iters,mean_warm_iters,iter_reduction_pct,mean_speedup,mean_gnn_mape_vm,mean_v_violations,n_scenarios,feasibility_rate_all
+GAT,1.0,3.769,4.385,-17.308,1.294,1.662,0.385,130,1.0
+GCN,1.0,3.769,4.385,-17.308,1.414,1.662,0.385,130,1.0
+GraphSAGE,1.0,3.769,4.385,-17.308,1.41,1.682,0.385,130,1.0

@@ -1,0 +1,10 @@
+model,case,mean_cold_iters,mean_warm_iters,iter_red_pct,n_bus,count
+GAT,case14,4.0,4.0,0.0,14,50
+GAT,case30,3.0,4.0,-33.33,30,30
+GAT,case118,4.0,5.0,-25.0,118,50
+GCN,case14,4.0,4.0,0.0,14,50
+GCN,case30,3.0,4.0,-33.33,30,30
+GCN,case118,4.0,5.0,-25.0,118,50
+GraphSAGE,case14,4.0,4.0,0.0,14,50
+GraphSAGE,case30,3.0,4.0,-33.33,30,30
+GraphSAGE,case118,4.0,5.0,-25.0,118,50
