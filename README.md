@@ -9,7 +9,7 @@
 
 ## Overview
 
-Optimal Power Flow (OPF) is a non-convex, computationally expensive optimisation problem that grid operators must solve thousands of times per day to dispatch generators safely and economically. As renewable penetration increases — with solar and wind outputs fluctuating minute-by-minute — traditional interior-point solvers (PIPS, IPOPT) that take 280–540 ms per solve are no longer adequate for sub-minute variability.
+Optimal Power Flow (OPF) is a non-convex, computationally expensive optimisation problem that grid operators must solve thousands of times per day to dispatch generators safely and economically. As renewable penetration increases - with solar and wind outputs fluctuating minute-by-minute - traditional interior-point solvers (PIPS, IPOPT) that take 280–540 ms per solve are no longer adequate for sub-minute variability.
 
 This project presents a **hybrid GNN–Newton-Raphson pipeline** that combines the speed of learned approximation with the safety guarantees of mathematical optimisation:
 
@@ -17,7 +17,7 @@ This project presents a **hybrid GNN–Newton-Raphson pipeline** that combines t
 2. The GNN prediction is used as a **warm start** for pandapower's Newton–Raphson solver, which refines it to full AC-feasibility.
 3. The GNN is trained with a **physics-informed loss** that combines supervised MSE with a DC power-balance penalty, encouraging predictions that respect Kirchhoff's Current Law before the NR step.
 
-The pipeline achieves **9–14× speedup** over the full PIPS solver, **100% NR feasibility** across all test cases, and voltage-magnitude MAPE of **1.41–1.44%** — well below the 2% planning threshold.
+The pipeline achieves **9–14× speedup** over the full PIPS solver, **100% NR feasibility** across all test cases, and voltage-magnitude MAPE of **1.41–1.44%** - well below the 2% planning threshold.
 
 ---
 
@@ -33,7 +33,7 @@ The pipeline achieves **9–14× speedup** over the full PIPS solver, **100% NR 
 | Iteration savings | None observed | Limited to small cases |
 | Large-grid validation | Absent | Not performed |
 
-**Recommended architecture: GCN** — matches GATv2 accuracy at lower inference cost with no multi-head attention overhead.
+**Recommended architecture: GCN** - matches GATv2 accuracy at lower inference cost with no multi-head attention overhead.
 
 ---
 
@@ -51,20 +51,20 @@ Power grids map naturally to graphs $\mathcal{G} = (\mathcal{V}, \mathcal{E})$:
 
 | Element | Representation | Features |
 |---|---|---|
-| Bus (node) | $v \in \mathcal{V}$ | $[P_d, Q_d, V^{\min}, V^{\max}, \text{type}]$ — dim 7 |
-| Line (edge) | $e \in \mathcal{E}$ | $[r, x, b, S^{\max}]$ normalised — dim 4 |
-| Target (per node) | — | $[v_m^{\text{pu}}, \theta_n, p_{g,n}]$ — dim 3 |
+| Bus (node) | $v \in \mathcal{V}$ | $[P_d, Q_d, V^{\min}, V^{\max}, \text{type}]$ - dim 7 |
+| Line (edge) | $e \in \mathcal{E}$ | $[r, x, b, S^{\max}]$ normalised - dim 4 |
+| Target (per node) | - | $[v_m^{\text{pu}}, \theta_n, p_{g,n}]$ - dim 3 |
 
 ### Three GNN Architectures
 
 All three share: 3 message-passing layers · hidden dim 128 · residual connections · LayerNorm · 10% dropout · 2-layer MLP decoder.
 
-**GCN** (Kipf & Welling, ICLR 2017) — spectral aggregation via normalised adjacency:
+**GCN** (Kipf & Welling, ICLR 2017) - spectral aggregation via normalised adjacency:
 $$\mathbf{H}^{(l+1)} = \sigma\!\left(\tilde{\mathbf{D}}^{-1/2} \tilde{\mathbf{A}} \tilde{\mathbf{D}}^{-1/2} \mathbf{H}^{(l)} \mathbf{W}^{(l)}\right)$$
 
-**GraphSAGE** (Hamilton et al., NeurIPS 2017) — inductive mean-aggregation with concatenation, enabling generalisation to unseen topologies.
+**GraphSAGE** (Hamilton et al., NeurIPS 2017) - inductive mean-aggregation with concatenation, enabling generalisation to unseen topologies.
 
-**GATv2** (Brody et al., ICLR 2022) — dynamic attention with explicit edge features, 4 parallel heads averaged per layer.
+**GATv2** (Brody et al., ICLR 2022) - dynamic attention with explicit edge features, 4 parallel heads averaged per layer.
 
 ### Physics-Informed Loss
 
@@ -72,9 +72,9 @@ Standard MSE treats each node independently. A DC power-balance penalty is added
 
 $$\mathcal{L} = \mathcal{L}_{\text{MSE}} + \lambda \underbrace{\|\mathbf{B}\hat{\boldsymbol{\theta}} - \hat{\mathbf{P}}_{\text{net}}\|_2^2}_{\mathcal{L}_{\text{phys}}}, \qquad \lambda = 0.10$$
 
-where $\mathbf{B}$ is the DC susceptance matrix (assembled per batch; slack bus row excluded). The penalty enforces $\mathbf{B}\theta = \mathbf{P}$ — Kirchhoff's Current Law linearised at unity voltage. At convergence, $\mathcal{L}_{\text{phys}}$ contributes ≈26% of total loss.
+where $\mathbf{B}$ is the DC susceptance matrix (assembled per batch; slack bus row excluded). The penalty enforces $\mathbf{B}\theta = \mathbf{P}$ - Kirchhoff's Current Law linearised at unity voltage. At convergence, $\mathcal{L}_{\text{phys}}$ contributes ≈26% of total loss.
 
-**Why λ = 0.10:** Too high destabilises training (physics gradient dominates at epoch 1 when random angles catastrophically violate KCL). Too low effectively ignores the constraint. λ = 0.10 is the stable sweet spot — MSE-dominated but physics-guided.
+**Why λ = 0.10:** Too high destabilises training (physics gradient dominates at epoch 1 when random angles catastrophically violate KCL). Too low effectively ignores the constraint. λ = 0.10 is the stable sweet spot - MSE-dominated but physics-guided.
 
 ### Warm-Start Pipeline
 
@@ -88,7 +88,7 @@ At inference:
 
 ## Dataset
 
-Ground-truth labels come exclusively from `pandapower.runopp()` (PIPS AC-OPF solver) — no synthetic labels.
+Ground-truth labels come exclusively from `pandapower.runopp()` (PIPS AC-OPF solver) - no synthetic labels.
 
 | Case | Buses | Lines | Scenarios | Split |
 |---|---|---|---|---|
@@ -118,31 +118,31 @@ Hardware used: Google Colab T4 GPU. Training completes in under 2 hours per arch
 
 These are documented to guide any future work building over this repository:
 
-**L1 — Only 3 small IEEE test cases.** All accuracy and speedup figures come from case14, case30, case118. No evidence on stressed or meshed large grids (300+ buses) where warm-starting yields the iteration savings reported in prior literature.
+**L1 - Only 3 small IEEE test cases.** All accuracy and speedup figures come from case14, case30, case118. No evidence on stressed or meshed large grids (300+ buses) where warm-starting yields the iteration savings reported in prior literature.
 
-**L2 — No iteration savings observed.** Flat NR start converges in 3–4 iterations on these well-conditioned cases — near the theoretical minimum. The 49% wall-clock saving on case14 comes from reduced Jacobian initialisation overhead in pandapower's `init='results'` code path, not from fewer iterations. Iteration benefits are expected at 300+ bus systems; this work cannot demonstrate them.
+**L2 - No iteration savings observed.** Flat NR start converges in 3–4 iterations on these well-conditioned cases - near the theoretical minimum. The 49% wall-clock saving on case14 comes from reduced Jacobian initialisation overhead in pandapower's `init='results'` code path, not from fewer iterations. Iteration benefits are expected at 300+ bus systems; this work cannot demonstrate them.
 
-**L3 — DC-only physics penalty.** $\mathcal{L}_{\text{phys}}$ enforces only the DC linearisation, ignoring reactive power $Q$, voltage magnitudes, and line losses. No explicit incentive to respect voltage bounds or reactive power balance during training.
+**L3 - DC-only physics penalty.** $\mathcal{L}_{\text{phys}}$ enforces only the DC linearisation, ignoring reactive power $Q$, voltage magnitudes, and line losses. No explicit incentive to respect voltage bounds or reactive power balance during training.
 
-**L4 — MAPE undefined for two targets.** See note in Evaluation section above.
+**L4 - MAPE undefined for two targets.** See note in Evaluation section above.
 
-**L5 — No objective gap metric.** A 1.4% voltage MAPE could correspond to near-zero or meaningful extra generation cost relative to the true OPF optimum — impossible to determine without computing the dispatch cost gap. This is the most important missing evaluation metric.
+**L5 - No objective gap metric.** A 1.4% voltage MAPE could correspond to near-zero or meaningful extra generation cost relative to the true OPF optimum - impossible to determine without computing the dispatch cost gap. This is the most important missing evaluation metric.
 
 ---
 
 ## Future Work
 
-**F1 — Scale to 300–1,000 bus systems.** Run `runopp()` on case300 and case1354 (PEGASE) with tighter perturbation bounds. This is where iteration-count savings materialise (flat NR needs 6–10+ iterations under heavy stress) and is the single most important validation step.
+**F1 - Scale to 300–1,000 bus systems.** Run `runopp()` on case300 and case1354 (PEGASE) with tighter perturbation bounds. This is where iteration-count savings materialise (flat NR needs 6–10+ iterations under heavy stress) and is the single most important validation step.
 
-**F2 — Full AC physics residuals.** Replace the DC penalty with true AC power-flow residuals:
+**F2 - Full AC physics residuals.** Replace the DC penalty with true AC power-flow residuals:
 $$\mathcal{L}_{\text{phys}}^{\text{AC}} = \|\Delta P(V, \theta)\|^2 + \|\Delta Q(V, \theta)\|^2$$
 More expensive per batch but provides a genuine AC signal including reactive power and voltage magnitudes.
 
-**F3 — Temporal GNNs with renewable forecasts.** A T-GCN or STGCN using rolling wind/solar forecast sequences for warm starts that account for generation trajectory — useful for 5-minute-ahead dispatch under ramp events.
+**F3 - Temporal GNNs with renewable forecasts.** A T-GCN or STGCN using rolling wind/solar forecast sequences for warm starts that account for generation trajectory - useful for 5-minute-ahead dispatch under ramp events.
 
-**F4 — Variable / learnable λ.** Schedule λ or make it a learnable parameter. The crossover between physics-dominated and label-dominated regimes reveals where the DC approximation helps vs. hurts.
+**F4 - Variable / learnable λ.** Schedule λ or make it a learnable parameter. The crossover between physics-dominated and label-dominated regimes reveals where the DC approximation helps vs. hurts.
 
-**F5 — Objective gap metric.** Augment MAPE with extra generation cost of warm-start dispatch vs. the true OPF optimum to quantify real economic impact.
+**F5 - Objective gap metric.** Augment MAPE with extra generation cost of warm-start dispatch vs. the true OPF optimum to quantify real economic impact.
 
 Also on the roadmap: N-1 contingency evaluation, transfer learning across grid topologies, and a real-time SCADA integration prototype.
 
